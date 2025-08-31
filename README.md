@@ -37,67 +37,27 @@ This project implements a complete dataset-focused object detection pipeline. Th
 ├── Dockerfile                     # Container configuration
 └── requirements.txt               # Python dependencies
 ```
-
-## Features
-
-### 1. Data Analysis (10 points)
-- **Interactive Dashboard**: Streamlit-based exploration of dataset statistics
-- **Distribution Analysis**: Class distribution, weather conditions, scene types, time of day
-- **Attribute Filtering**: Filter by occlusion, truncation, traffic light colors
-- **Visualization**: RGB distribution analysis and object dimension scatter plots
-- **Anomaly Detection**: Identify patterns and outliers in different object classes
-
-### 2. Model Training (5+5 points)
-- **YOLOv9e Architecture**: State-of-the-art object detection model
-- **Transfer Learning**: Fine-tuning from pre-trained weights
-- **Custom Data Loader**: Efficient BDD100k format handling
-- **Training Pipeline**: Complete training workflow with validation
-
-### 3. Evaluation & Visualization (10 points)
-- **Quantitative Metrics**: mAP (Mean Average Precision), IoU (Intersection over Union)
-- **Qualitative Analysis**: Visual comparison of predictions vs ground truth
-- **Error Analysis**: Classification of correct predictions, missed detections, false positives
-- **Interactive Dashboard**: Browse evaluation results with filtering capabilities
-
-## Docker Usage
-
-The project is fully containerized for easy deployment and testing.
-
 ### Prerequisites
 
 **System Requirements:**
 - Docker Engine 20.10+
 - For GPU acceleration: NVIDIA Container Toolkit
 - Minimum 8GB RAM, 16GB recommended
-- 20GB+ free disk space for dataset and models
+- 8GB+ free disk space for dataset and models
 
 **GPU Support Setup:**
-```bash
-# Install NVIDIA Container Toolkit (Ubuntu/Debian)
-distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
-   && curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add - \
-   && curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+You must install NVIDIA Container Toolkit to use your gpu for training and inference.
 
+```bash
 sudo apt-get update
 sudo apt-get install -y nvidia-container-toolkit
 sudo systemctl restart docker
-
-# Verify GPU access
-docker run --rm --gpus all nvidia/cuda:11.0-base nvidia-smi
 ```
 
-**For other distributions:**
-```bash
-# CentOS/RHEL/Fedora
-curl -s -L https://nvidia.github.io/nvidia-docker/centos8/nvidia-docker.repo | sudo tee /etc/yum.repos.d/nvidia-docker.repo
-sudo yum install -y nvidia-container-toolkit
-sudo systemctl restart docker
-```
-
-### Build Container
+### Setup
 ```bash
 # Clone repository and navigate to project directory
-cd /path/to/nus-data
+cd bdd100k-dashboard
 
 # Build the Docker image (this may take 10-15 minutes)
 docker build -t bdd-detection .
@@ -111,12 +71,12 @@ docker images | grep bdd-detection
 **1. Data Analysis Dashboard**
 ```bash
 # CPU only
-docker run -p 8501:8501 -e ARG_NUM=1 bdd-detection
+docker run -p 8504:8501 -e ARG_NUM=1 bdd-detection
 
 # With GPU support (recommended for faster processing)
-docker run --gpus all -p 8501:8501 -e ARG_NUM=1 bdd-detection
+docker run --gpus all -p 8504:8501 -e ARG_NUM=1 bdd-detection
 ```
-Access dashboard at: http://localhost:8501
+Access dashboard at: http://localhost:8504
 
 **2. Model Training**
 ```bash
@@ -145,56 +105,17 @@ docker run --gpus all -v $(pwd)/data:/app/data -e ARG_NUM=3 bdd-detection
 **4. Evaluation Visualization Dashboard**
 ```bash
 # CPU only
-docker run -p 8501:8501 -e ARG_NUM=4 bdd-detection
+docker run -p 8504:8501 -e ARG_NUM=4 bdd-detection
 
 # With GPU support
-docker run --gpus all -p 8501:8501 -e ARG_NUM=4 bdd-detection
+docker run --gpus all -p 8504:8501 -e ARG_NUM=4 bdd-detection
 ```
-Access dashboard at: http://localhost:8501
+Access dashboard at: http://localhost:8504
 
-### Volume Mounting Options
-```bash
-# Mount specific directories for data persistence
-docker run --gpus all \
-  -v $(pwd)/data:/app/data \
-  -v $(pwd)/results:/app/results \
-  -p 8501:8501 \
-  -e ARG_NUM=1 \
-  bdd-detection
+### Setup (without Docker)
 
-# Mount entire project (development mode)
-docker run --gpus all \
-  -v $(pwd):/app \
-  -p 8501:8501 \
-  -e ARG_NUM=1 \
-  bdd-detection
-```
+Create an environment, activate and run this script.
 
-### Troubleshooting
-```bash
-# Check container logs
-docker logs <container_id>
-
-# Interactive shell access for debugging
-docker run -it --gpus all bdd-detection /bin/bash
-
-# Verify GPU access inside container
-docker run --gpus all bdd-detection nvidia-smi
-
-# Check available GPU memory
-docker run --gpus all bdd-detection python -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}'); print(f'GPU count: {torch.cuda.device_count()}')"
-
-# Remove container after use (cleanup)
-docker run --rm --gpus all -e ARG_NUM=1 bdd-detection
-```
-
-## Local Development
-
-### Prerequisites
-- Python 3.12+
-- CUDA-capable GPU (optional, CPU training supported)
-
-### Setup
 ```bash
 # Install dependencies
 pip install -r requirements.txt
@@ -233,38 +154,6 @@ streamlit run evaluation_visualization/dashboard.py
 - **mAP@0.5:0.95**: Mean Average Precision across multiple IoU thresholds
 - **Class-wise Performance**: Individual metrics per object category
 - **Confusion Analysis**: Detailed breakdown of prediction accuracy
-
-## Technical Implementation
-
-### Data Format Conversion
-The pipeline converts BDD100k's native JSON format to YOLO-compatible text annotations, enabling efficient training with the Ultralytics framework.
-
-### Custom Data Loader
-Implements optimized data loading with proper batching, augmentation, and normalization for the BDD100k dataset structure.
-
-### Evaluation Pipeline
-Comprehensive evaluation including:
-- Prediction-target matching based on IoU and class agreement
-- Visualization of correct predictions, missed detections, and false positives
-- Statistical analysis of model performance across different conditions
-
-## Performance Analysis
-
-The system provides detailed analysis of model performance including:
-- Weather condition impact on detection accuracy
-- Scene type performance variations
-- Object size and aspect ratio correlation with detection success
-- Time of day effects on model performance
-
-## Dependencies
-
-Core libraries:
-- **ultralytics**: YOLOv9 implementation
-- **torch/torchvision**: Deep learning framework
-- **streamlit**: Interactive dashboard framework
-- **plotly**: Advanced visualization
-- **opencv-python**: Image processing
-- **pandas/numpy**: Data manipulation
 
 ## Results
 
