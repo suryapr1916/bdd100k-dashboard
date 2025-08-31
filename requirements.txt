@@ -1,0 +1,13 @@
+matplotlib
+pandas
+Pillow
+plotly
+streamlit
+numpy
+opencv_python
+tqdm
+ultralytics
+torch
+torchmetrics
+torchvision
+pycocotools

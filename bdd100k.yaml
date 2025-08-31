@@ -1,0 +1,19 @@
+
+path: data/assignment_data_bdd/bdd100k_images_100k/bdd100k
+train: images/100k/train
+val: images/100k/val
+test: images/100k/test
+
+names:
+  0: bike
+  1: bus
+  2: car
+  3: drivable area
+  4: lane
+  5: motor
+  6: person
+  7: rider
+  8: traffic light
+  9: traffic sign
+  10: train
+  11: truck
