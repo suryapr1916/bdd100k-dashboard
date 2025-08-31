@@ -4,7 +4,7 @@ A comprehensive computer vision pipeline for object detection on the BDD100k dat
 
 ## Overview
 
-This project implements a complete end-to-end object detection pipeline as part of the Bosch Global Software Technologies Applied CV Coding Assignment. The system processes the BDD100k dataset for autonomous driving scenarios, focusing on 10 object detection classes including vehicles, pedestrians, traffic elements, and road infrastructure.
+This project implements a complete dataset-focused object detection pipeline. The system processes the BDD100k dataset for autonomous driving scenarios, focusing on 10 object detection classes including vehicles, pedestrians, traffic elements, and road infrastructure.
 
 ## Dataset
 
